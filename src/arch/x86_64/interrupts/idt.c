@@ -1,4 +1,3 @@
-#include "stdio.h"
 #include <idt.h>
 #include <gdt.h>
 #include <cpu.h>
@@ -6,6 +5,7 @@
 #include <macro.h>
 
 #include <stdint.h>
+#include <kprintf.h>
 
 ALIGNED(0x10) static struct idt_entry idt[IDT_MAX_DESCRIPTORS];
 static struct idtr idtr;
@@ -20,7 +20,7 @@ void idt_init() {
     idtr.base = (uint64_t)&idt[0];
     idtr.limit = ((uint16_t)sizeof(struct idt_entry) * IDT_MAX_DESCRIPTORS) - 1;
 
-    debugf_trace("Loading IDTR @ %#p\n", &idtr);
+    kprintf_trace("Loading IDTR @ %#p\n", &idtr);
 
     _lidt(&idtr);
     _enable_interrupts();

@@ -2,7 +2,7 @@
 #include <tss.h>
 
 #include <stdint.h>
-#include <stdio.h>
+#include <kprintf.h>
 
 static struct gdtr gdtr;
 static struct gdt_entry gdt[6];
@@ -18,7 +18,7 @@ void gdt_init() {
 
     gdtr.size = sizeof(gdt) - 1;
     gdtr.pointer = (uint64_t)&gdt;
-    debugf_trace("Loading GDTR %#p\n", &gdtr);
+    kprintf_trace("Loading GDTR %#p\n", &gdtr);
     _lgdt(&gdtr);
     _reload_segments(GDT_CODE_SEGMENT, GDT_DATA_SEGMENT);
 }

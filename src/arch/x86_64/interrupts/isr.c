@@ -6,7 +6,7 @@
 #include <macro.h>
 
 #include <stdint.h>
-#include <stdio.h>
+#include <kprintf.h>
 
 static const char* exception_strings[32] = {
     "Divide by zero",
@@ -62,9 +62,9 @@ void isr_handler(struct interrupt_ctx* ctx) {
     switch (ctx->interrupt) {
         case 0 ... 31:
             _disable_interrupts();
-            debugf_panic("Exception %#llx (%s) errcode=%#llx\n", ctx->interrupt, exception_strings[ctx->interrupt], ctx->error);
+            kprintf_panic("Exception %#llx (%s) errcode=%#llx\n", ctx->interrupt, exception_strings[ctx->interrupt], ctx->error);
             _hcf();
         default:
-            debugf_warn("Unhandled interrupt %#llx\n", ctx->interrupt);
+            kprintf_warn("Unhandled interrupt %#llx\n", ctx->interrupt);
     }
 }
