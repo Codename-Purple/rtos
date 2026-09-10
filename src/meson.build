@@ -17,7 +17,7 @@ c_args = [
 sources = [
   'kernel/kernel.c',
   'kernel/memory.c',
-  'kernel/stdio.c',
+  'kernel/kprintf.c',
   'kernel/assert.c',
   'kernel/datatypes/llist.c',
   'kernel/mm/pmm.c'
