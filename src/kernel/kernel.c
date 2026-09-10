@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include <stdio.h>
+#include <kprintf.h>
 
 #include <limine.h>
 
@@ -69,11 +69,11 @@ void kmain(void) {
         }
     }
 
-    debugf("Hello from pk2!\n");
-    debugf_error("ERROR\n");
-    debugf_warn("WARNING\n");
-    debugf_ok("SUCCESS\n");
-    debugf_trace("trace\n");
+    kprintf_info("Hello from pk2!\n");
+    kprintf_error("ERROR\n");
+    kprintf_warn("WARNING\n");
+    kprintf_ok("SUCCESS\n");
+    kprintf_trace("trace\n");
 
     arch_entry();
 
@@ -81,10 +81,10 @@ void kmain(void) {
     assert(memmap_request.response->entries != NULL);
 
     struct limine_memmap_response* memmap = memmap_request.response;
-    debugf_trace("Limine memory map\n");
+    kprintf_trace("Limine memory map\n");
     for (uint64_t i = 0; i < memmap->entry_count; i++) {
         struct limine_memmap_entry* entry = memmap->entries[i];
-        debugf_trace("\t%#llx-%#llx (%s)\n", entry->base, entry->base + entry->length, memmap_entry_types[entry->type]);
+        kprintf_trace("\t%#llx-%#llx (%s)\n", entry->base, entry->base + entry->length, memmap_entry_types[entry->type]);
     }
 
     assert(hhdm_request.response != NULL);

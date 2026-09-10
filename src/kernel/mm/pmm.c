@@ -6,7 +6,7 @@
 #include <cpu.h>
 
 #include <stdint.h>
-#include <stdio.h>
+#include <kprintf.h>
 
 #include <datatypes/llist.h>
 
@@ -21,17 +21,17 @@ uintptr_t hhdm_virtual(uintptr_t p) {
 }
 
 void print_pmm_stats() {
-    debugf_trace("Total memory: %zu\n", pmm.total_usable_mem);
-    debugf_trace("PMM init stats:\n");
+    kprintf_trace("Total memory: %zu\n", pmm.total_usable_mem);
+    kprintf_trace("PMM init stats:\n");
     for (struct ll_node* n = pmm.head; n != NULL; n = n->next) {
-        debugf_trace("\tbase:%#llx length:%#zu\n", (uintptr_t)n - pmm.limine_hhdm_offset, n->len);
+        kprintf_trace("\tbase:%#llx length:%#zu\n", (uintptr_t)n - pmm.limine_hhdm_offset, n->len);
     }
 }
 
 void pmm_init(LIMINE_PTR(struct limine_memmap_response*) memmap, uint64_t limine_hhdm_offset) {
     assert(memmap != NULL);
     pmm.limine_hhdm_offset = limine_hhdm_offset;
-    debugf_trace("HHDM offset @ %#llx\n", pmm.limine_hhdm_offset);
+    kprintf_trace("HHDM offset @ %#llx\n", pmm.limine_hhdm_offset);
 
     for (uint64_t i = 0; i < memmap->entry_count; i++) {
         struct limine_memmap_entry* e = memmap->entries[i];
@@ -52,13 +52,13 @@ void* palloc(size_t pages) {
     size_t s = pages * PAGESZ;
     void* p = llalloc(&pmm.head, s, NULL);
     if (!p) {
-        debugf_panic("OUT OF MEMORY!\n");
+        kprintf_panic("OUT OF MEMORY!\n");
         _hcf();
     }
 
     memset(p, 0, s);
     pmm.used_mem += s;
-    debugf_trace("Allocated %zu page%s @ %#llx\n", pages, pages > 1 ? "s": "", (uintptr_t)p - pmm.limine_hhdm_offset);
+    kprintf_trace("Allocated %zu page%s @ %#llx\n", pages, pages > 1 ? "s": "", (uintptr_t)p - pmm.limine_hhdm_offset);
     return (void*)(p - pmm.limine_hhdm_offset);
 }
 
@@ -68,5 +68,5 @@ void pfree(void* p, size_t pages) {
 
     llfree(&pmm.head, p_virt, s);
     pmm.used_mem -= s;
-    debugf_trace("Reclaimed %zu page%s\n", pages, pages > 1 ? "s": "");
+    kprintf_trace("Reclaimed %zu page%s\n", pages, pages > 1 ? "s": "");
 }
